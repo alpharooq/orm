@@ -144,7 +144,13 @@ class orm{
     {
         $where = ' WHERE ';
         foreach($arr_where as $key => $value){
-            $where .= '`' . $key . '`' . ' = ' . "'$value' " . $type . ' ';
+            $typeValue = gettype($value); // integer
+            if ( $typeValue == 'integer' ) {
+                $value = $value;
+            } else {
+                $value = "'$value'";
+            }
+            $where .= '`' . $key . '`' . ' = ' . "$value " . $type . ' ';
         }
         $where = mb_substr($where,0,-3);
         $this->sql = $this->sql . $where;
@@ -169,10 +175,14 @@ class orm{
     fun => run
     act => run sql order
     */
-    public function run ()
+    public function run ($out = false)
     {
-        $this->query = self::query( $this->sql );
-        return $this;
+        if ( $out == false ) {
+            $this->query = self::query( $this->sql );
+            return $this;
+        } else if ( $out == 'sql' ) {
+            echo $this->sql;
+        }
     }
     /*
     fun => ex
